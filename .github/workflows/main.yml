@@ -12,11 +12,11 @@ jobs:
 
     steps:
 
-    - name: Check out code
-      uses: actions/checkout@v3
-
+    - uses: actions/checkout@v3
     - name: Set up Python
       uses: actions/setup-python@v4
+      with:
+        python-version: 3.12
 
       with:
         python-version: 3.12
@@ -25,8 +25,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip setuptools
         pip install flake8==6.0.0 isort==6.0.1
+        pip install -r ./backend/requirements.txt
 
-    - name: Test with flake8
+    - name: Test with flake8 and django tests
       run: |
         isort --check-only backend/
         python -m flake8 backend/
+        python manage.py test
