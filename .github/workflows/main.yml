@@ -46,4 +46,5 @@ jobs:
       run: |
         isort --check-only backend/
         python -m flake8 backend/
+        cd backend/
         python manage.py test
