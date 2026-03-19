@@ -1,32 +1,29 @@
-version: '3'
 volumes:
-  pg_data:
-  # Новый volume — для статических файлов
-  static:
+  pg_data_production:
+  static_volume:
 
+# Всё отличие — заменяем build на image и указываем, какой образ использовать
 services:
   db:
     image: postgres:13.10
     env_file: .env
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - pg_data_production:/var/lib/postgresql/data
   backend:
-    build: ./backend/
+    image: username/taski_backend # Качаем с Docker Hub
     env_file: .env
-    # Тут подключаем volume к backend
     volumes:
-      - static:/backend_static
+      - static_volume:/backend_static
   frontend:
+    image: username/taski_frontend  # Качаем с Docker Hub
     env_file: .env
-    build: ./frontend/
     command: cp -r /app/build/. /frontend_static/
     volumes:
-      - static:/frontend_static
-  
+      - static_volume:/frontend_static
   gateway:
-    build: ./gateway/
-    # А тут подключаем volume со статикой к gateway
+    image: username/taski_gateway  # Качаем с Docker Hub
+    env_file: .env
     volumes:
-      - static:/backend_static
+      - static_volume:/staticfiles/
     ports:
       - 8000:80 
